@@ -25,3 +25,5 @@ client.on("message", (msg) => {
   });
 // bot login
 client.login(process.env.TOKEN);
+
+// to start bot, run "node index.js"
