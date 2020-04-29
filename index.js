@@ -23,6 +23,15 @@ client.on("message", (msg) => {
       msg.react('🇧').then(msg.react('🇦')).then(msg.react('🇩'));
     }
   });
+//Start of the "reporting" system
+client.on("message", (msg) =>{
+  if(msg.content == "=report"){
+    msg.reply("EHHHHHK");
+  }
+});
+
+
+  
 // bot login
 client.login(process.env.TOKEN);
 
