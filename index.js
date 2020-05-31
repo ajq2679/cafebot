@@ -24,19 +24,51 @@ client.on("message", (msg) => {
     }
   });
 // detects when someone types "i-" and adds to database
-client.on("message", (msg) => {
-  if (msg.content.includes("i-") || msg.content.includes("I-") ) {
-    msg.reply("oh");
-  }
-});
+// client.on("message", (msg) => {
+//   if (msg.content.includes("i-") || msg.content.includes("I-") ) {
+//     msg.reply("oh");
+//   }
+// });
+// detects when someone says "oop" and adds to database
+
 // 8ball
 client.on("message", (msg) => {
-  if (msg.content.includes("cafe 8ball") ) {
+  if (msg.content.startsWith("cafe 8ball") ) {
     var result = Math.random();
     if (result > 0.5) {
       msg.reply("yeaaaa boiii");
     } else {
       msg.reply("haha nope lol get rekt")
+    }
+  }
+});
+// hug
+client.on("message", (msg) => {
+  if (msg.content.startsWith("cafe hug")) {
+    let huggedUser = msg.mentions.users.first();
+    let author = msg.author;
+    if (!huggedUser) {
+      return;
+    } else if (huggedUser.id == author.id) {
+      msg.reply("You can't hug yourself you ding dong");
+      return;
+    } else {
+      msg.channel.send(huggedUser.username + ", You got a hug from " + author.username + "! https://tenor.com/view/anime-cuddle-cute-love-gif-12669038");
+    }
+  }
+});
+// high five
+client.on("message", (msg) => {
+  if (msg.content.startsWith("cafe highfive")) {
+    let highfiveduser = msg.mentions.users.first();
+    let author = msg.author;
+    if (!highfiveduser) {
+      return;
+    } else if (highfiveduser.id == author.id) {
+      msg.reply("You can't hug yourself you ding dong");
+      return;
+    } else {
+      msg.channel.send(highfiveduser.username + ", You got a high five from " + author.username + "! https://tenor.com/view/pokemon-pikachu-piplup-high-five-cute-gif-16832624");
     }
   }
 });
