@@ -45,19 +45,25 @@ client.on("message", (msg) => {
 });
 // checks to see how many times the person said i-
 client.on("message", (msg) => {
-  if (msg.content.startsWith("cafe icheck") ) {
+  if (msg.content.startsWith("cafe icheck")) {
     let mentionedUser = msg.mentions.users.first();
     if (!mentionedUser) {
       msg.channel.send("Please mention someone to check");
       return;
     } else {
-      if (db.has(mentionedUser)) {
-        msg.channel.send("That user has said I- " + db.get(mentionedUser) + " times.")
+      if (db.has(mentionedUser.id)) {
+        msg.channel.send("That user has said I- " + db.get(mentionedUser.id) + " times.")
       } else {
         db.set(mentionedUser.id, 0);
-        msg.channel.send("That user has said I- " + db.get(mentionedUser) + " times.")
+        msg.channel.send("That user has said I- " + db.get(mentionedUser.id) + " times.")
       }
     }
+  }
+});
+// db.all command for debug testing
+client.on("message", (msg) => {
+  if (msg.content === "cafe ilist") {
+    msg.channel.send(db.all());
   }
 });
 // detects when someone says "oop" and adds to database
