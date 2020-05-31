@@ -1,5 +1,8 @@
 const Discord = require("discord.js");
 const config = require("dotenv");
+// Array of all possible i- combinations
+const iArray = ["i-", "I-", "im-", "iM-", "I'm-", "i'm-", "IM-", "I'M-", "Im-"];
+const db = require("quick.db");
 const client = new Discord.Client({
   disableEveryone: true,
 });
@@ -19,18 +22,45 @@ client.on("message", (msg) => {
 });
 // detects when someone types "bad" and reacts with B A D
 client.on("message", (msg) => {
-    if (msg.content === "bad") {
-      msg.react('🇧').then(msg.react('🇦')).then(msg.react('🇩'));
+  if (msg.content.includes("bad") ) {
+    msg.react('🇧').then(msg.react('🇦')).then(msg.react('🇩'));
+  }
+});
+//detects when someone types "i-" and adds to database
+client.on("message", (msg) => {
+  let userThatSaidI = msg.author.id;
+  for (var i = 0; i < iArray.length; i++) {
+    if (msg.content.includes(iArray[i])) {
+      // msg.reply("oh");
+      if (db.has(userThatSaidI)) {
+        db.add(userThatSaidI, 1);
+      } else {
+        db.set(userThatSaidI, 0);
+        db.add(userThatSaidI, 1);
+      }
+      break;
     }
-  });
-// detects when someone types "i-" and adds to database
-// client.on("message", (msg) => {
-//   if (msg.content.includes("i-") || msg.content.includes("I-") ) {
-//     msg.reply("oh");
-//   }
-// });
+  }
+  return;
+});
+// checks to see how many times the person said i-
+client.on("message", (msg) => {
+  if (msg.content.startsWith("cafe icheck") ) {
+    let mentionedUser = msg.mentions.users.first();
+    if (!mentionedUser) {
+      msg.channel.send("Please mention someone to check");
+      return;
+    } else {
+      if (db.has(mentionedUser)) {
+        msg.channel.send("That user has said I- " + db.get(mentionedUser) + " times.")
+      } else {
+        db.set(mentionedUser.id, 0);
+        msg.channel.send("That user has said I- " + db.get(mentionedUser) + " times.")
+      }
+    }
+  }
+});
 // detects when someone says "oop" and adds to database
-
 // 8ball
 client.on("message", (msg) => {
   if (msg.content.startsWith("cafe 8ball") ) {
@@ -47,7 +77,8 @@ client.on("message", (msg) => {
   if (msg.content.startsWith("cafe hug")) {
     let huggedUser = msg.mentions.users.first();
     let author = msg.author;
-    if (!huggedUser) {
+    if (!huggedUser) { // check if huggedUser actually exists
+      msg.channel.send("dawg you didn't mention somebody to hug")
       return;
     } else if (huggedUser.id == author.id) {
       msg.reply("You can't hug yourself you ding dong");
