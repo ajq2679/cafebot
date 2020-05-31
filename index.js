@@ -13,7 +13,7 @@ client.on("ready", () => {
 });
 // ping command
 client.on("message", (msg) => {
-  if (msg.content === "ping") {
+  if (msg.content === "cafe ping") {
     msg.reply("Pong!");
   }
 });
@@ -23,6 +23,23 @@ client.on("message", (msg) => {
       msg.react('🇧').then(msg.react('🇦')).then(msg.react('🇩'));
     }
   });
+// detects when someone types "i-" and adds to database
+client.on("message", (msg) => {
+  if (msg.content.includes("i-") || msg.content.includes("I-") ) {
+    msg.reply("oh");
+  }
+});
+// 8ball
+client.on("message", (msg) => {
+  if (msg.content.includes("cafe 8ball") ) {
+    var result = Math.random();
+    if (result > 0.5) {
+      msg.reply("yeaaaa boiii");
+    } else {
+      msg.reply("haha nope lol get rekt")
+    }
+  }
+});
 //Start of the "reporting" system
 client.on("message", (msg) =>{
   if(msg.content == "=report"){
