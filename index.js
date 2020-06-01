@@ -2,7 +2,20 @@ const Discord = require("discord.js");
 const config = require("dotenv");
 // Array of all possible i- combinations
 const iArray = ["i-", "I-", "im-", "iM-", "I'm-", "i'm-", "IM-", "I'M-", "Im-"];
-const db = require("quick.db");
+const offsenses = ["JohnGow", "Bitch"];
+var saidis = new db.table('saidis')
+var reports = new db.table('reports')
+const Explains = {
+  "JohnGow": "You have been found guilty of gaming and/or drinking past 8pm and as such you have broken article 5 of Captain Johjn Gow's 1725 Pirate code",
+  "Bitch" : "You have been found guilty of being a bitch"
+};
+let db = new sqlite3.Database('cafe.db', sqlite3.OPEN_READWRITE, (err) => {
+  if (err) {
+    console.error(err.message);
+  }
+  console.log('Connected to the chinook database.');
+});
+
 const client = new Discord.Client({
   disableEveryone: true,
 });
@@ -32,11 +45,11 @@ client.on("message", (msg) => {
   for (var i = 0; i < iArray.length; i++) {
     if (msg.content.includes(iArray[i])) {
       // msg.reply("oh");
-      if (db.has(userThatSaidI)) {
-        db.add(userThatSaidI, 1);
+      if (saidis.has(userThatSaidI)) {
+        saidis.add(userThatSaidI, 1);
       } else {
-        db.set(userThatSaidI, 0);
-        db.add(userThatSaidI, 1);
+        saidis.set(userThatSaidI, 0);
+        saidis.add(userThatSaidI, 1);
       }
       break;
     }
@@ -51,11 +64,11 @@ client.on("message", (msg) => {
       msg.channel.send("Please mention someone to check");
       return;
     } else {
-      if (db.has(mentionedUser.id)) {
-        msg.channel.send("That user has said I- " + db.get(mentionedUser.id) + " times.")
+      if (saidis.has(mentionedUser.id)) {
+        msg.channel.send("That user has said I- " + saidis.get(mentionedUser.id) + " times.")
       } else {
-        db.set(mentionedUser.id, 0);
-        msg.channel.send("That user has said I- " + db.get(mentionedUser.id) + " times.")
+        saidis.set(mentionedUser.id, 0);
+        msg.channel.send("That user has said I- " + saidis.get(mentionedUser.id) + " times.")
       }
     }
   }
@@ -63,7 +76,7 @@ client.on("message", (msg) => {
 // db.all command for debug testing
 client.on("message", (msg) => {
   if (msg.content === "cafe ilist") {
-    msg.channel.send(db.all());
+    msg.channel.send(saidis.all());
   }
 });
 // detects when someone says "oop" and adds to database
@@ -110,14 +123,25 @@ client.on("message", (msg) => {
   }
 });
 //Start of the "reporting" system
-client.on("message", (msg) =>{
-  if(msg.content == "=report"){
-    msg.reply("EHHHHHK");
+client.on("message", (msg) => {
+  let reportedusr = msg.mentions.users.first();
+  if (msg.content.startsWith("cafe report")) {
+    let array = msg.content.split(" ");
+      for(var i = 0; i < offsenses.length; i++){
+        if(msg.content.includes(offsenses[i])){
+          if (reports.has(reportedusr)) {
+            reports.add(reportedusr, 1);
+          } else {
+            reports.set(reportedusr, 0);
+            reports.add(reportedusr, 1);
+          }
+          break;
+
+        }
+      }
   }
 });
 
-
-  
 // bot login
 client.login(process.env.TOKEN);
 
