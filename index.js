@@ -119,7 +119,7 @@ client.on("message", (msg) => {
       if (result >= 0.5) {
         msg.reply("yeaaaa boiii");
       } else {
-        msg.reply("haha nope lol get rekt");
+        msg.reply("nah, doesn't look like it chief");
       }
     }
     // hug
@@ -128,17 +128,22 @@ client.on("message", (msg) => {
       let author = msg.author;
       if (!huggedUser) {
         // check if huggedUser actually exists
-        msg.channel.send("dawg you didn't mention somebody to hug");
+        msg.channel.send("who are you tryna hug again?");
         return;
       } else if (huggedUser.id == author.id) {
         msg.reply("You can't hug yourself you ding dong");
         return;
       } else {
+        min = Math.ceil(4);
+        max = Math.floor(0);
+        result = Math.floor(Math.random() * (max - min + 1)) + min;
+        possibleGIFs = ["https://tenor.com/bbQCJ.gif", "https://tenor.com/7Xh1.gif", "",
+         "https://tenor.com/thvU.gif", "https://tenor.com/TrcC.gif"];
         msg.channel.send(
           huggedUser.username +
             ", You got a hug from " +
             author.username +
-            "! https://tenor.com/view/anime-cuddle-cute-love-gif-12669038"
+            "! " + possibleGIFs[result]
         );
       }
     }
@@ -147,9 +152,9 @@ client.on("message", (msg) => {
       let highfiveduser = msg.mentions.users.first();
       let author = msg.author;
       if (!highfiveduser) {
-        return;
+        msg.reply("dawg are you trying to slap somebody? please mention someone to highfive")
       } else if (highfiveduser.id == author.id) {
-        msg.reply("You can't hug yourself you ding dong");
+        msg.reply("Congrats! you literally just clapped yourself");
         return;
       } else {
         msg.channel.send(
