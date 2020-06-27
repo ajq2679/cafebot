@@ -1,3 +1,8 @@
 package-lock.json
 /node_modules/*
+/config/*
 .env
+counter.sqlite-shm
+counter.sqlite-wal
+counter.sqlite
+json.sqlite
