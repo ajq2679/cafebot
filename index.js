@@ -2,15 +2,6 @@ const Discord = require("discord.js");
 const config = require("dotenv");
 // Array of all possible i- combinations
 const iArray = ["i-", "I-", "im-", "iM-", "I'm-", "i'm-", "IM-", "I'M-", "Im-"];
-// const mongoConfig = require("config");
-// const db = mongoConfig.get("mongoURI");
-// const express = require("express");
-// const mongoose = require("mongoose");
-//const app = express();
-//mongo stuff
-// mongoose
-//   .connect(db, {useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true})
-//   .then(() => console.log("MongoDB connected...")).catch(err => console.log("err"));
 // SQLite stuff
 const SQLite = require("better-sqlite3");
 const sql = new SQLite("./counter.sqlite");
@@ -72,9 +63,10 @@ client.on("message", (msg) => {
         break;
       }
     }
-    // command for checking how many times u said i-
+    // command for checking how many times you said i-
     if (msg.content.startsWith("cafe counter")) {
-      return msg.reply(
+      const user = msg.mentions.users.first() || client.users.get(msg.content)
+      msg.reply(
         `You currently have said i- a total of ${counter.icount} times.`
       );
     }
@@ -104,6 +96,7 @@ client.on("message", (msg) => {
   }
 });
 client.on("message", (msg) => {
+  if (msg.author.bot) return;
   if (msg.guild) {
     // ping command
     if (msg.content === "cafe ping") {
@@ -134,16 +127,20 @@ client.on("message", (msg) => {
         msg.reply("You can't hug yourself you ding dong");
         return;
       } else {
-        min = Math.ceil(4);
-        max = Math.floor(0);
-        result = Math.floor(Math.random() * (max - min + 1)) + min;
-        possibleGIFs = ["https://tenor.com/bbQCJ.gif", "https://tenor.com/7Xh1.gif", "",
-         "https://tenor.com/thvU.gif", "https://tenor.com/TrcC.gif"];
+        result = Math.floor((Math.random() * 5) + 1);
+        possibleGIFs = [
+          "https://tenor.com/bbQCJ.gif",
+          "https://tenor.com/7Xh1.gif",
+          "https://66.media.tumblr.com/b3b033f62ed1b20ee842e2e76b20b871/tumblr_ni8acmfO631qfjr5zo1_500.gif",
+          "https://tenor.com/thvU.gif",
+          "https://tenor.com/TrcC.gif",
+        ];
         msg.channel.send(
           huggedUser.username +
             ", You got a hug from " +
             author.username +
-            "! " + possibleGIFs[result]
+            "! " +
+            possibleGIFs[result]
         );
       }
     }
@@ -152,7 +149,9 @@ client.on("message", (msg) => {
       let highfiveduser = msg.mentions.users.first();
       let author = msg.author;
       if (!highfiveduser) {
-        msg.reply("dawg are you trying to slap somebody? please mention someone to highfive")
+        msg.reply(
+          "dawg are you trying to slap somebody? please mention someone to highfive"
+        );
       } else if (highfiveduser.id == author.id) {
         msg.reply("Congrats! you literally just clapped yourself");
         return;
