@@ -9,9 +9,9 @@
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "line-reader": "^0.4.0",
     "mongoose": "^5.9.17",
     "node-gyp": "^7.0.0",
-    "quick.db": "^7.1.1",
     "quickdb": "^1.0.5",
     "uuid": "^8.1.0",
     "uuidv4": "^6.1.0"

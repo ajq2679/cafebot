@@ -5,6 +5,7 @@ const iArray = ["i-", "I-", "im-", "iM-", "I'm-", "i'm-", "IM-", "I'M-", "Im-"];
 // SQLite stuff
 const SQLite = require("better-sqlite3");
 const sql = new SQLite("./counter.sqlite");
+const lineReader = require("line-reader");
 // const sqlconfig = require("./config.json");
 //beginning of discord bot stuff
 const client = new Discord.Client({
@@ -102,10 +103,10 @@ client.on("message", (msg) => {
     if (msg.content === "cafe ping") {
       msg.reply("Pong!");
     }
-    // detects when someone types "bad" and reacts with B A D
-    if (msg.content.includes("bad")) {
-      msg.react("🇧").then(msg.react("🇦")).then(msg.react("🇩"));
-    }
+    // // detects when someone types "bad" and reacts with B A D
+    // if (msg.content.includes("bad")) {
+    //   msg.react("🇧").then(msg.react("🇦")).then(msg.react("🇩"));
+    // }
     // 8ball
     if (msg.content.startsWith("cafe 8ball")) {
       var result = Math.random();
@@ -163,6 +164,45 @@ client.on("message", (msg) => {
             "! https://tenor.com/view/pokemon-pikachu-piplup-high-five-cute-gif-16832624"
         );
       }
+    }
+  }
+});
+// mass kick when given list
+client.on("message", (msg) => {
+  if (msg.content.startsWith("!cafe prune")) {
+    if (msg.author.bot) return;
+    if (msg.member.hasPermission("ADMINISTRATOR")) {
+      msg.reply("you are god");
+      // msg.reply(msg.content.split(" ")[1]);
+      msg.channel.send("are you sure you want to prune? remember to specify that list in the bot folder!")
+      msg.channel.awaitMessages(m => m.author.id == msg.author.id, {max: 1, time: 30000}).then(collected => {
+        if (collected.first().content === "yes") {
+          msg.reply("ok boss, pruning now");
+          // start prune, read from internal file
+          lineReader.eachLine("C:\\Users\\Andrew\\Desktop\\cafebot\\cafebot\\kicklist.txt", function (line) {
+            if (line.includes("STOP")) {
+              msg.channel.send("yay we're done!");
+              return false; // stop reading, done kicking
+            } else {
+              if (!msg.guild.member(line)) {
+                msg.channel.send("that user doesn't exist!")
+              } else {
+                msg.channel.send("kicking " + msg.guild.member(line).user.tag + "....");
+                msg.guild.member(line).kick();
+              }
+            }
+          });
+        } else {
+          msg.reply("aw, you're no fun");
+          return;
+        }
+      }).catch(() => { // runs if command times out 
+        msg.reply("boss you took too long, imma just dip");
+        return;
+      });
+    } else { // if user does not have perms 
+      msg.reply("you are............wait a minute you arent god, gtfo");
+      return;
     }
   }
 });

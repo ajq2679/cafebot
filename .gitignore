@@ -6,3 +6,4 @@ counter.sqlite-shm
 counter.sqlite-wal
 counter.sqlite
 json.sqlite
+kicklist.txt
