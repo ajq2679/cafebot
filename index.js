@@ -46,7 +46,7 @@ client.on("message", (msg) => {
       };
     }
     for (var i = 0; i < iArray.length; i++) {
-      if (msg.content.includes(iArray[i]) && msg.channel.id != "733105403507769344") {
+      if (msg.content.includes(iArray[i]) && msg.channel.id != "685892819021332602") {
         counter.icount++;
         client.setCounter.run(counter);
         break;
