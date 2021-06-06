@@ -5,7 +5,6 @@ const iArray = ["i-", "I-", "im-", "iM-", "I'm-", "i'm-", "IM-", "I'M-", "Im-"];
 // SQLite stuff
 const SQLite = require("better-sqlite3");
 const sql = new SQLite("./counter.sqlite");
-const lineReader = require("line-reader");
 // const sqlconfig = require("./config.json");
 //beginning of discord bot stuff
 const client = new Discord.Client({
@@ -24,7 +23,7 @@ client.on("ready", () => {
     sql.prepare("CREATE TABLE counter (id TEXT PRIMARY KEY, user TEXT, guild TEXT, icount INTEGER);").run();
     // ensure "id" row is always unique and indexed - no repeat user IDs allowed
     sql.prepare("CREATE UNIQUE INDEX idx_counter_id ON counter (id);").run();
-    // magic pragma shit, makes the database run faster apparently
+    // magic pragma shit, makes the database run faster apparently yeet
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   }
@@ -136,38 +135,37 @@ client.on("message", (msg) => {
     if (msg.author.bot) return;
     if (msg.member.hasPermission("ADMINISTRATOR")) {
       msg.reply("you are god");
-      // msg.reply(msg.content.split(" ")[1]);
-      msg.channel.send("are you sure you want to prune? remember to specify that list in the bot folder!");
-      msg.channel
-        .awaitMessages((m) => m.author.id == msg.author.id, {
+      const serverid = client.guilds.cache.get("661839301524324372")
+      // 703043893377237002 - Pika's IRL pal, 729424050266308718 = Camp visitors, 843207063709810688 campers, 673957562130890782 verified
+      msg.channel.send("are you sure you want to prune?");
+      const servermembers = serverid.members.cache.filter(member => {
+        if (member.roles.cache.has("729424050266308718") && !member.roles.cache.has("703043893377237002") && !member.roles.cache.has("843207063709810688") && member.roles.cache.has("673957562130890782"))
+          return true;
+      }); 
+      msg.channel.send("you are going to kick the following members (check logs): ");
+      servermembers.each(member => console.log(member.user.username))
+      msg.channel.awaitMessages((m) => m.author.id == msg.author.id, {
           max: 1,
-          time: 30000,
-        })
-        .then((collected) => {
+          time: 3000000,
+        }).then((collected) => {
           if (collected.first().content === "yes") {
             msg.reply("ok boss, pruning now");
-            // start prune, read from internal file
-            lineReader.eachLine("C:\\Users\\Andrew\\Desktop\\cafebot\\cafebot\\kicklist.txt", function (line) {
-              if (line.includes("STOP")) {
-                msg.channel.send("yay we're done!");
-                return false; // stop reading, done kicking
-              } else {
-                if (!msg.guild.member(line)) {
-                  msg.channel.send("that user doesn't exist!");
-                } else {
-                  msg.channel.send("kicking " + msg.guild.member(line).user.tag + "....");
-                  msg.guild.member(line).kick();
-                }
-              }
+            const serverid = client.guilds.cache.get("661839301524324372")
+            const servermembers = serverid.members.cache.filter(member => {
+              if (member.roles.cache.has("729424050266308718") && !member.roles.cache.has("703043893377237002") && !member.roles.cache.has("843207063709810688") && member.roles.cache.has("673957562130890782"))
+                return true;
             });
+            servermembers.each(member => console.log(member.kick().then(()=>{}).catch(error => {console.log("could not kick " + member.user.username + " bc" + error)})));
+            //servermembers.each(member => console.log(member.user.username))
+            msg.channel.send("all done!");
+
           } else {
             msg.reply("aw, you're no fun");
             return;
           }
-        })
-        .catch(() => {
-          // runs if command times out
-          msg.reply("boss you took too long, imma just dip");
+        }).catch((error) => {
+          // runs if command times out or error
+          msg.reply("boss you took too long, imma just dip, or some error happened: " + error);
           return;
         });
     } else {
@@ -175,6 +173,16 @@ client.on("message", (msg) => {
       msg.reply("you are............wait a minute you arent god, gtfo");
       return;
     }
+  }
+});
+//  test command, get all users
+client.on("message", (msg) => {
+  if (msg.content == "!cafe userlist") {
+    const serverid = client.guilds.cache.get("536602689841266688")
+    //serverid.members.cache.forEach(member => console.log(member.user.username))
+    const servermembers = serverid.members.cache.filter(member => member.roles.cache.has('680285738285400064'));
+    servermembers.each(member => console.log(member.user.username))
+
   }
 });
 //Start of the "reporting" system
